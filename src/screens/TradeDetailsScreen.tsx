@@ -5,6 +5,8 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
+import { formatCompactCurrency } from "../utils/formatters";
+import SignalBadge from "../components/SignalBadge";
 
 type Props = NativeStackScreenProps<RootStackParamList, "TradeDetails">;
 
@@ -18,6 +20,8 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
       </SafeAreaView>
     );
   }
+
+  const actionWord = trade.type === "purchase" ? "buy" : "sale";
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -42,6 +46,16 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
           <View style={styles.badge}>
             <Text style={styles.badgeText}>FICTIONAL DEMO DATA</Text>
           </View>
+        </View>
+
+        <View style={styles.signalCard}>
+          <View style={styles.signalTopRow}>
+            <Text style={styles.signalName}>{trade.signal}</Text>
+            <SignalBadge strength={trade.signalStrength} />
+          </View>
+          <Text style={styles.signalLine}>
+            {formatCompactCurrency(trade.value)} fictional demo insider {actionWord}
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -102,6 +116,30 @@ const styles = StyleSheet.create({
   },
   notFound: {
     padding: theme.spacing.lg,
+    fontSize: theme.fontSize.body,
+    color: theme.colors.textSecondary,
+  },
+  signalCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+    gap: theme.spacing.sm,
+  },
+  signalTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.sm,
+  },
+  signalName: {
+    flex: 1,
+    fontSize: theme.fontSize.sectionHeading,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+  },
+  signalLine: {
     fontSize: theme.fontSize.body,
     color: theme.colors.textSecondary,
   },
