@@ -1,15 +1,40 @@
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
+import type { RoleFilter, TransactionFilter, ValueFilter } from "../types/trade";
+import FilterChip from "../components/FilterChip";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Screener">;
 
+const TRANSACTION_OPTIONS: { label: string; value: TransactionFilter }[] = [
+  { label: "All", value: "all" },
+  { label: "Purchases", value: "purchase" },
+  { label: "Sales", value: "sale" },
+];
+
+const ROLE_OPTIONS: { label: string; value: RoleFilter }[] = [
+  { label: "All roles", value: "all" },
+  { label: "CEO", value: "CEO" },
+  { label: "CFO", value: "CFO" },
+  { label: "Director", value: "Director" },
+];
+
+const VALUE_OPTIONS: { label: string; value: ValueFilter }[] = [
+  { label: "Any", value: "any" },
+  { label: "$100K+", value: "100k" },
+  { label: "$500K+", value: "500k" },
+  { label: "$1M+", value: "1m" },
+];
+
 export default function ScreenerScreen(_props: Props) {
   const [searchText, setSearchText] = useState("");
+  const [transactionFilter, setTransactionFilter] = useState<TransactionFilter>("all");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+  const [valueFilter, setValueFilter] = useState<ValueFilter>("any");
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -32,6 +57,50 @@ export default function ScreenerScreen(_props: Props) {
           autoCorrect={false}
         />
       </View>
+
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterLabel}>Transaction type</Text>
+          <View style={styles.chipRow}>
+            {TRANSACTION_OPTIONS.map((option) => (
+              <FilterChip
+                key={option.value}
+                label={option.label}
+                selected={transactionFilter === option.value}
+                onPress={() => setTransactionFilter(option.value)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterLabel}>Insider role</Text>
+          <View style={styles.chipRow}>
+            {ROLE_OPTIONS.map((option) => (
+              <FilterChip
+                key={option.value}
+                label={option.label}
+                selected={roleFilter === option.value}
+                onPress={() => setRoleFilter(option.value)}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.filterGroup}>
+          <Text style={styles.filterLabel}>Minimum value</Text>
+          <View style={styles.chipRow}>
+            {VALUE_OPTIONS.map((option) => (
+              <FilterChip
+                key={option.value}
+                label={option.label}
+                selected={valueFilter === option.value}
+                onPress={() => setValueFilter(option.value)}
+              />
+            ))}
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -83,5 +152,22 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.body,
     color: theme.colors.textPrimary,
     paddingVertical: theme.spacing.sm,
+  },
+  content: {
+    padding: theme.spacing.lg,
+    gap: theme.spacing.lg,
+  },
+  filterGroup: {
+    gap: theme.spacing.sm,
+  },
+  filterLabel: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textSecondary,
+    fontWeight: theme.fontWeight.semibold,
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: theme.spacing.sm,
   },
 });
