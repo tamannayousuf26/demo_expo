@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
+import { mockTrades } from "../data/mockTrades";
 import type { RoleFilter, TransactionFilter, ValueFilter } from "../types/trade";
 import FilterChip from "../components/FilterChip";
+
+const VALUE_THRESHOLDS: Record<ValueFilter, number> = {
+  any: 0,
+  "100k": 100000,
+  "500k": 500000,
+  "1m": 1000000,
+};
 
 type Props = NativeStackScreenProps<RootStackParamList, "Screener">;
 
@@ -35,6 +43,23 @@ export default function ScreenerScreen(_props: Props) {
   const [transactionFilter, setTransactionFilter] = useState<TransactionFilter>("all");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
   const [valueFilter, setValueFilter] = useState<ValueFilter>("any");
+
+  const filteredTrades = useMemo(() => {
+    const query = searchText.trim().toLowerCase();
+    const minValue = VALUE_THRESHOLDS[valueFilter];
+
+    return mockTrades.filter((trade) => {
+      const matchesSearch =
+        query === "" ||
+        trade.ticker.toLowerCase().includes(query) ||
+        trade.company.toLowerCase().includes(query);
+      const matchesTransaction = transactionFilter === "all" || trade.type === transactionFilter;
+      const matchesRole = roleFilter === "all" || trade.role === roleFilter;
+      const matchesValue = trade.value >= minValue;
+
+      return matchesSearch && matchesTransaction && matchesRole && matchesValue;
+    });
+  }, [searchText, transactionFilter, roleFilter, valueFilter]);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -100,6 +125,10 @@ export default function ScreenerScreen(_props: Props) {
             ))}
           </View>
         </View>
+
+        <Text style={styles.resultCount}>
+          {filteredTrades.length} {filteredTrades.length === 1 ? "result" : "results"}
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -169,5 +198,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: theme.spacing.sm,
+  },
+  resultCount: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textSecondary,
   },
 });
