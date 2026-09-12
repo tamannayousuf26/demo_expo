@@ -105,6 +105,17 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
         <View style={styles.chartCard}>
           <MockActivityChart points={MOCK_ACTIVITY_POINTS} />
         </View>
+
+        <View style={styles.educationBlock}>
+          <Text style={styles.sectionHeading}>Why this matters</Text>
+          <Text style={styles.educationText}>
+            A senior executive buying or selling shares in their own company is one
+            data point analysts weigh alongside earnings, competitive position and
+            broader market conditions. It does not reveal that person's total
+            finances, other holdings, or private view of near-term results, and on
+            its own it does not predict how the stock will perform.
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -234,5 +245,18 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.border,
     padding: theme.spacing.md,
     alignItems: "center",
+  },
+  educationBlock: {
+    gap: theme.spacing.sm,
+  },
+  sectionHeading: {
+    fontSize: theme.fontSize.sectionHeading,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+  },
+  educationText: {
+    fontSize: theme.fontSize.body,
+    color: theme.colors.textSecondary,
+    lineHeight: 22,
   },
 });
