@@ -1,30 +1,38 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
-import { mockTrades } from "../data/mockTrades";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Screener">;
 
-export default function ScreenerScreen({ navigation }: Props) {
-  const firstTradeId = mockTrades[0].id;
+export default function ScreenerScreen(_props: Props) {
+  const [searchText, setSearchText] = useState("");
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Screener</Text>
-      <Text style={styles.subtitle}>Screener placeholder — Phase 5 builds this out.</Text>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Screener</Text>
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>Fictional demo data</Text>
+        </View>
+      </View>
 
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate("TradeDetails", { tradeId: firstTradeId })}
-      >
-        <Text style={styles.buttonText}>Go to Trade Details</Text>
-      </Pressable>
-
-      <Pressable style={styles.button} onPress={() => navigation.goBack()}>
-        <Text style={styles.buttonText}>Back to Home</Text>
-      </Pressable>
-    </View>
+      <View style={styles.searchRow}>
+        <Ionicons name="search" size={18} color={theme.colors.textMuted} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search ticker or company"
+          placeholderTextColor={theme.colors.textMuted}
+          value={searchText}
+          onChangeText={setSearchText}
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -32,32 +40,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
-    justifyContent: "center",
-    gap: theme.spacing.md,
+  },
+  header: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.sm,
   },
   title: {
     fontSize: theme.fontSize.screenTitle,
     fontWeight: theme.fontWeight.semibold,
     color: theme.colors.textPrimary,
   },
-  subtitle: {
-    fontSize: theme.fontSize.body,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.md,
+  badge: {
+    backgroundColor: theme.colors.surfaceRaised,
+    borderRadius: theme.radius.card,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs / 2,
   },
-  button: {
+  badgeText: {
+    fontSize: theme.fontSize.badge,
+    color: theme.colors.textSecondary,
+    fontWeight: theme.fontWeight.semibold,
+  },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.sm,
+    minHeight: 44,
+    marginHorizontal: theme.spacing.lg,
+    marginTop: theme.spacing.md,
     backgroundColor: theme.colors.surfaceRaised,
     borderRadius: theme.radius.card,
     borderWidth: 1,
     borderColor: theme.colors.border,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    alignItems: "center",
+    paddingHorizontal: theme.spacing.md,
   },
-  buttonText: {
-    color: theme.colors.textPrimary,
+  searchInput: {
+    flex: 1,
     fontSize: theme.fontSize.body,
-    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+    paddingVertical: theme.spacing.sm,
   },
 });
