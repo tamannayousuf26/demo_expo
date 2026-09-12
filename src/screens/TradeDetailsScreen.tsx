@@ -7,8 +7,11 @@ import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
 import { formatCompactCurrency, formatFiledAt, formatFullCurrency, formatShares } from "../utils/formatters";
 import SignalBadge from "../components/SignalBadge";
+import MockActivityChart from "../components/MockActivityChart";
 
 type Props = NativeStackScreenProps<RootStackParamList, "TradeDetails">;
+
+const MOCK_ACTIVITY_POINTS = [14, 19, 17, 23, 21, 27, 25];
 
 type DetailRowProps = {
   label: string;
@@ -97,6 +100,10 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
             value={`${trade.signalStrength} · ${trade.signal}`}
             isLast
           />
+        </View>
+
+        <View style={styles.chartCard}>
+          <MockActivityChart points={MOCK_ACTIVITY_POINTS} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -219,5 +226,13 @@ const styles = StyleSheet.create({
   demoTag: {
     fontSize: theme.fontSize.badge,
     color: theme.colors.textMuted,
+  },
+  chartCard: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+    alignItems: "center",
   },
 });
