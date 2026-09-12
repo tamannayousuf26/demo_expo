@@ -5,10 +5,29 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
-import { formatCompactCurrency } from "../utils/formatters";
+import { formatCompactCurrency, formatFiledAt, formatFullCurrency, formatShares } from "../utils/formatters";
 import SignalBadge from "../components/SignalBadge";
 
 type Props = NativeStackScreenProps<RootStackParamList, "TradeDetails">;
+
+type DetailRowProps = {
+  label: string;
+  value: string;
+  isDemoValue?: boolean;
+  isLast?: boolean;
+};
+
+function DetailRow({ label, value, isDemoValue, isLast }: DetailRowProps) {
+  return (
+    <View style={[styles.detailRow, isLast ? styles.detailRowLast : null]}>
+      <Text style={styles.detailLabel}>{label}</Text>
+      <View style={styles.detailValueGroup}>
+        <Text style={styles.detailValue}>{value}</Text>
+        {isDemoValue ? <Text style={styles.demoTag}>Demo value</Text> : null}
+      </View>
+    </View>
+  );
+}
 
 export default function TradeDetailsScreen({ route, navigation }: Props) {
   const trade = mockTrades.find((t) => t.id === route.params.tradeId);
@@ -56,6 +75,28 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
           <Text style={styles.signalLine}>
             {formatCompactCurrency(trade.value)} fictional demo insider {actionWord}
           </Text>
+        </View>
+
+        <View style={styles.detailGrid}>
+          <DetailRow label="Insider" value={`${trade.insider} · ${trade.role}`} />
+          <DetailRow
+            label="Transaction type"
+            value={`${trade.type === "purchase" ? "Purchase" : "Sale"} (${trade.transactionCode})`}
+          />
+          <DetailRow label="Shares" value={formatShares(trade.shares)} />
+          <DetailRow
+            label="Price per share"
+            value={formatFullCurrency(trade.pricePerShare)}
+            isDemoValue
+          />
+          <DetailRow label="Total value" value={formatFullCurrency(trade.value)} isDemoValue />
+          <DetailRow label="Transaction date" value={formatFiledAt(trade.transactionDate)} />
+          <DetailRow label="Filed date" value={formatFiledAt(trade.filedAt)} />
+          <DetailRow
+            label="Signal strength"
+            value={`${trade.signalStrength} · ${trade.signal}`}
+            isLast
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -142,5 +183,41 @@ const styles = StyleSheet.create({
   signalLine: {
     fontSize: theme.fontSize.body,
     color: theme.colors.textSecondary,
+  },
+  detailGrid: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  detailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.sm,
+    paddingHorizontal: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  detailRowLast: {
+    borderBottomWidth: 0,
+  },
+  detailLabel: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textSecondary,
+  },
+  detailValueGroup: {
+    alignItems: "flex-end",
+  },
+  detailValue: {
+    fontSize: theme.fontSize.body,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+    textAlign: "right",
+  },
+  demoTag: {
+    fontSize: theme.fontSize.badge,
+    color: theme.colors.textMuted,
   },
 });
