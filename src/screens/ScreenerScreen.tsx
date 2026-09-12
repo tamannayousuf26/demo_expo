@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -61,6 +61,13 @@ export default function ScreenerScreen({ navigation }: Props) {
       return matchesSearch && matchesTransaction && matchesRole && matchesValue;
     });
   }, [searchText, transactionFilter, roleFilter, valueFilter]);
+
+  const clearFilters = () => {
+    setSearchText("");
+    setTransactionFilter("all");
+    setRoleFilter("all");
+    setValueFilter("any");
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -131,15 +138,26 @@ export default function ScreenerScreen({ navigation }: Props) {
           {filteredTrades.length} {filteredTrades.length === 1 ? "result" : "results"}
         </Text>
 
-        <View style={styles.list}>
-          {filteredTrades.map((trade) => (
-            <TradeCard
-              key={trade.id}
-              trade={trade}
-              onPress={() => navigation.navigate("TradeDetails", { tradeId: trade.id })}
-            />
-          ))}
-        </View>
+        {filteredTrades.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyText}>
+              No fictional demo trades match those filters.
+            </Text>
+            <Pressable style={styles.clearButton} onPress={clearFilters}>
+              <Text style={styles.clearButtonText}>Clear filters</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View style={styles.list}>
+            {filteredTrades.map((trade) => (
+              <TradeCard
+                key={trade.id}
+                trade={trade}
+                onPress={() => navigation.navigate("TradeDetails", { tradeId: trade.id })}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -216,5 +234,28 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: theme.spacing.sm,
+  },
+  emptyState: {
+    alignItems: "center",
+    gap: theme.spacing.md,
+    paddingVertical: theme.spacing.xl,
+  },
+  emptyText: {
+    fontSize: theme.fontSize.body,
+    color: theme.colors.textSecondary,
+    textAlign: "center",
+  },
+  clearButton: {
+    minHeight: 44,
+    justifyContent: "center",
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.radius.card,
+    borderWidth: 1,
+    borderColor: theme.colors.accent,
+  },
+  clearButtonText: {
+    fontSize: theme.fontSize.body,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.accent,
   },
 });
