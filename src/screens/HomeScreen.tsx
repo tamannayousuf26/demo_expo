@@ -8,6 +8,7 @@ import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
 import { formatCompactCurrency } from "../utils/formatters";
 import SummaryCard from "../components/SummaryCard";
+import SignalBadge from "../components/SignalBadge";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -32,6 +33,15 @@ export default function HomeScreen({ navigation }: Props) {
         },
         { count: 0, purchaseTotal: 0, saleTotal: 0 }
       ),
+    []
+  );
+
+  const topSignals = useMemo(
+    () =>
+      mockTrades
+        .filter((trade) => trade.signalStrength === "High")
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3),
     []
   );
 
@@ -62,6 +72,25 @@ export default function HomeScreen({ navigation }: Props) {
             value={formatCompactCurrency(summary.saleTotal)}
             accentColor={theme.colors.sale}
           />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionHeading}>Top signals</Text>
+          {topSignals.map((trade) => (
+            <Pressable
+              key={trade.id}
+              style={styles.signalRow}
+              onPress={() => navigation.navigate("TradeDetails", { tradeId: trade.id })}
+            >
+              <View style={styles.signalText}>
+                <Text style={styles.signalName}>{trade.signal}</Text>
+                <Text style={styles.signalMeta}>
+                  {trade.ticker} · {formatCompactCurrency(trade.value)}
+                </Text>
+              </View>
+              <SignalBadge strength={trade.signalStrength} />
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -121,5 +150,38 @@ const styles = StyleSheet.create({
   summaryRow: {
     flexDirection: "row",
     gap: theme.spacing.sm,
+  },
+  section: {
+    gap: theme.spacing.sm,
+  },
+  sectionHeading: {
+    fontSize: theme.fontSize.sectionHeading,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+  },
+  signalRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.sm,
+    minHeight: 44,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radius.card,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+  },
+  signalText: {
+    flex: 1,
+    gap: theme.spacing.xs / 2,
+  },
+  signalName: {
+    fontSize: theme.fontSize.body,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.textPrimary,
+  },
+  signalMeta: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textSecondary,
   },
 });
