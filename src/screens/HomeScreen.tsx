@@ -1,13 +1,40 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useMemo } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
+import { mockTrades } from "../data/mockTrades";
+import { formatCompactCurrency } from "../utils/formatters";
+import SummaryCard from "../components/SummaryCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
+type Summary = {
+  count: number;
+  purchaseTotal: number;
+  saleTotal: number;
+};
+
 export default function HomeScreen({ navigation }: Props) {
+  const summary = useMemo<Summary>(
+    () =>
+      mockTrades.reduce(
+        (acc, trade) => {
+          acc.count += 1;
+          if (trade.type === "purchase") {
+            acc.purchaseTotal += trade.value;
+          } else {
+            acc.saleTotal += trade.value;
+          }
+          return acc;
+        },
+        { count: 0, purchaseTotal: 0, saleTotal: 0 }
+      ),
+    []
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <View style={styles.header}>
@@ -21,6 +48,22 @@ export default function HomeScreen({ navigation }: Props) {
         <Ionicons name="search" size={18} color={theme.colors.textMuted} />
         <Text style={styles.searchText}>Search ticker or company</Text>
       </Pressable>
+
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.summaryRow}>
+          <SummaryCard label="Filings" value={String(summary.count)} />
+          <SummaryCard
+            label="Purchases"
+            value={formatCompactCurrency(summary.purchaseTotal)}
+            accentColor={theme.colors.purchase}
+          />
+          <SummaryCard
+            label="Sales"
+            value={formatCompactCurrency(summary.saleTotal)}
+            accentColor={theme.colors.sale}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -70,5 +113,13 @@ const styles = StyleSheet.create({
   searchText: {
     fontSize: theme.fontSize.body,
     color: theme.colors.textMuted,
+  },
+  content: {
+    padding: theme.spacing.lg,
+    gap: theme.spacing.lg,
+  },
+  summaryRow: {
+    flexDirection: "row",
+    gap: theme.spacing.sm,
   },
 });
