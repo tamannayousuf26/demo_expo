@@ -13,6 +13,9 @@ type Props = NativeStackScreenProps<RootStackParamList, "TradeDetails">;
 
 const MOCK_ACTIVITY_POINTS = [14, 19, 17, 23, 21, 27, 25];
 
+export const DISCLAIMER =
+  "This prototype uses mock data for demonstration only. Insider-trading filings are public disclosures and do not constitute investment advice. Past activity does not guarantee future stock performance.";
+
 type DetailRowProps = {
   label: string;
   value: string;
@@ -116,6 +119,8 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
             its own it does not predict how the stock will perform.
           </Text>
         </View>
+
+        <Text style={styles.disclaimer}>{DISCLAIMER}</Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -258,5 +263,10 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSize.body,
     color: theme.colors.textSecondary,
     lineHeight: 22,
+  },
+  disclaimer: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textMuted,
+    lineHeight: 20,
   },
 });
