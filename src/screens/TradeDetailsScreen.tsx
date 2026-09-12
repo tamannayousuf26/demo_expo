@@ -227,10 +227,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   detailLabel: {
+    flexShrink: 0,
     fontSize: theme.fontSize.label,
     color: theme.colors.textSecondary,
   },
   detailValueGroup: {
+    flex: 1,
     alignItems: "flex-end",
   },
   detailValue: {

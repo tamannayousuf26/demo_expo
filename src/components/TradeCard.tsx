@@ -35,10 +35,10 @@ export default function TradeCard({ trade, onPress }: Props) {
       </View>
 
       <View style={styles.bottomRow}>
-        <Text style={styles.meta} numberOfLines={1}>
+        <Text style={[styles.meta, styles.metaInsider]} numberOfLines={1}>
           {trade.insider} · {trade.role}
         </Text>
-        <Text style={styles.meta}>{formatFiledAt(trade.filedAt)}</Text>
+        <Text style={[styles.meta, styles.metaDate]}>{formatFiledAt(trade.filedAt)}</Text>
       </View>
     </Pressable>
   );
@@ -95,5 +95,11 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: theme.fontSize.label,
     color: theme.colors.textMuted,
+  },
+  metaInsider: {
+    flex: 1,
+  },
+  metaDate: {
+    flexShrink: 0,
   },
 });
