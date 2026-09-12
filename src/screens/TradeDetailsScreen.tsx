@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
@@ -9,20 +11,40 @@ type Props = NativeStackScreenProps<RootStackParamList, "TradeDetails">;
 export default function TradeDetailsScreen({ route, navigation }: Props) {
   const trade = mockTrades.find((t) => t.id === route.params.tradeId);
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Trade Details</Text>
-      <Text style={styles.subtitle}>
-        {trade
-          ? `${trade.ticker} — ${trade.company}`
-          : "No trade found for this id"}
-      </Text>
-      <Text style={styles.subtitle}>Details placeholder — Phase 6 builds this out.</Text>
+  if (!trade) {
+    return (
+      <SafeAreaView style={styles.container} edges={["top"]}>
+        <Text style={styles.notFound}>No trade found for this id.</Text>
+      </SafeAreaView>
+    );
+  }
 
-      <Pressable style={styles.button} onPress={() => navigation.goBack()}>
-        <Text style={styles.buttonText}>Back</Text>
-      </Pressable>
-    </View>
+  return (
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.topBar}>
+        <Pressable
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Go back"
+          accessibilityRole="button"
+        >
+          <Ionicons name="arrow-back" size={22} color={theme.colors.textPrimary} />
+        </Pressable>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.companyHeader}>
+          <View style={styles.companyIdentity}>
+            <Text style={styles.ticker}>{trade.ticker}</Text>
+            <Text style={styles.company}>{trade.company}</Text>
+            <Text style={styles.sector}>{trade.sector}</Text>
+          </View>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>FICTIONAL DEMO DATA</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -30,32 +52,57 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
+  },
+  topBar: {
+    flexDirection: "row",
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.md,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
     justifyContent: "center",
-    gap: theme.spacing.md,
   },
-  title: {
-    fontSize: theme.fontSize.screenTitle,
+  content: {
+    padding: theme.spacing.lg,
+    gap: theme.spacing.lg,
+  },
+  companyHeader: {
+    gap: theme.spacing.sm,
+  },
+  companyIdentity: {
+    gap: theme.spacing.xs / 2,
+  },
+  ticker: {
+    fontSize: theme.fontSize.label,
+    color: theme.colors.textSecondary,
     fontWeight: theme.fontWeight.semibold,
-    color: theme.colors.textPrimary,
   },
-  subtitle: {
+  company: {
+    fontSize: theme.fontSize.screenTitle,
+    color: theme.colors.textPrimary,
+    fontWeight: theme.fontWeight.semibold,
+  },
+  sector: {
     fontSize: theme.fontSize.body,
     color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.md,
   },
-  button: {
+  badge: {
+    alignSelf: "flex-start",
     backgroundColor: theme.colors.surfaceRaised,
     borderRadius: theme.radius.card,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    alignItems: "center",
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs / 2,
   },
-  buttonText: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.fontSize.body,
+  badgeText: {
+    fontSize: theme.fontSize.badge,
+    color: theme.colors.textSecondary,
     fontWeight: theme.fontWeight.semibold,
+  },
+  notFound: {
+    padding: theme.spacing.lg,
+    fontSize: theme.fontSize.body,
+    color: theme.colors.textSecondary,
   },
 });
