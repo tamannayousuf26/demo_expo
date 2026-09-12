@@ -9,6 +9,7 @@ import { mockTrades } from "../data/mockTrades";
 import { formatCompactCurrency } from "../utils/formatters";
 import SummaryCard from "../components/SummaryCard";
 import SignalBadge from "../components/SignalBadge";
+import TradeCard from "../components/TradeCard";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
@@ -42,6 +43,14 @@ export default function HomeScreen({ navigation }: Props) {
         .filter((trade) => trade.signalStrength === "High")
         .sort((a, b) => b.value - a.value)
         .slice(0, 3),
+    []
+  );
+
+  const latestActivity = useMemo(
+    () =>
+      [...mockTrades]
+        .sort((a, b) => new Date(b.filedAt).getTime() - new Date(a.filedAt).getTime())
+        .slice(0, 4),
     []
   );
 
@@ -90,6 +99,17 @@ export default function HomeScreen({ navigation }: Props) {
               </View>
               <SignalBadge strength={trade.signalStrength} />
             </Pressable>
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionHeading}>Latest activity</Text>
+          {latestActivity.map((trade) => (
+            <TradeCard
+              key={trade.id}
+              trade={trade}
+              onPress={() => navigation.navigate("TradeDetails", { tradeId: trade.id })}
+            />
           ))}
         </View>
       </ScrollView>
