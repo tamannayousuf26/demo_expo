@@ -1,30 +1,21 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
-import { mockTrades } from "../data/mockTrades";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
-export default function HomeScreen({ navigation }: Props) {
-  const firstTradeId = mockTrades[0].id;
-
+export default function HomeScreen(_props: Props) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Market Pulse</Text>
-      <Text style={styles.subtitle}>Home screen placeholder — Phase 4 builds this out.</Text>
-
-      <Pressable style={styles.button} onPress={() => navigation.navigate("Screener")}>
-        <Text style={styles.buttonText}>Go to Screener</Text>
-      </Pressable>
-
-      <Pressable
-        style={styles.button}
-        onPress={() => navigation.navigate("TradeDetails", { tradeId: firstTradeId })}
-      >
-        <Text style={styles.buttonText}>Go to Trade Details</Text>
-      </Pressable>
-    </View>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Market Pulse</Text>
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>Fictional demo data</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -32,32 +23,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
-    justifyContent: "center",
-    gap: theme.spacing.md,
+  },
+  header: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingTop: theme.spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: theme.spacing.sm,
   },
   title: {
     fontSize: theme.fontSize.screenTitle,
     fontWeight: theme.fontWeight.semibold,
     color: theme.colors.textPrimary,
   },
-  subtitle: {
-    fontSize: theme.fontSize.body,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.md,
-  },
-  button: {
+  badge: {
     backgroundColor: theme.colors.surfaceRaised,
     borderRadius: theme.radius.card,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
-    alignItems: "center",
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: theme.spacing.xs / 2,
   },
-  buttonText: {
-    color: theme.colors.textPrimary,
-    fontSize: theme.fontSize.body,
+  badgeText: {
+    fontSize: theme.fontSize.badge,
+    color: theme.colors.textSecondary,
     fontWeight: theme.fontWeight.semibold,
   },
 });
