@@ -8,6 +8,7 @@ import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
 import type { RoleFilter, TransactionFilter, ValueFilter } from "../types/trade";
 import FilterChip from "../components/FilterChip";
+import TradeCard from "../components/TradeCard";
 
 const VALUE_THRESHOLDS: Record<ValueFilter, number> = {
   any: 0,
@@ -38,7 +39,7 @@ const VALUE_OPTIONS: { label: string; value: ValueFilter }[] = [
   { label: "$1M+", value: "1m" },
 ];
 
-export default function ScreenerScreen(_props: Props) {
+export default function ScreenerScreen({ navigation }: Props) {
   const [searchText, setSearchText] = useState("");
   const [transactionFilter, setTransactionFilter] = useState<TransactionFilter>("all");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
@@ -129,6 +130,16 @@ export default function ScreenerScreen(_props: Props) {
         <Text style={styles.resultCount}>
           {filteredTrades.length} {filteredTrades.length === 1 ? "result" : "results"}
         </Text>
+
+        <View style={styles.list}>
+          {filteredTrades.map((trade) => (
+            <TradeCard
+              key={trade.id}
+              trade={trade}
+              onPress={() => navigation.navigate("TradeDetails", { tradeId: trade.id })}
+            />
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -202,5 +213,8 @@ const styles = StyleSheet.create({
   resultCount: {
     fontSize: theme.fontSize.label,
     color: theme.colors.textSecondary,
+  },
+  list: {
+    gap: theme.spacing.sm,
   },
 });
