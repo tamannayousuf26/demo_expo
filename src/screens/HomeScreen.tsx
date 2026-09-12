@@ -112,6 +112,11 @@ export default function HomeScreen({ navigation }: Props) {
             />
           ))}
         </View>
+
+        <Pressable style={styles.viewAll} onPress={() => navigation.navigate("Screener")}>
+          <Text style={styles.viewAllText}>View all trades</Text>
+          <Ionicons name="chevron-forward" size={16} color={theme.colors.accent} />
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,5 +208,17 @@ const styles = StyleSheet.create({
   signalMeta: {
     fontSize: theme.fontSize.label,
     color: theme.colors.textSecondary,
+  },
+  viewAll: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: theme.spacing.xs,
+    minHeight: 44,
+  },
+  viewAllText: {
+    fontSize: theme.fontSize.body,
+    fontWeight: theme.fontWeight.semibold,
+    color: theme.colors.accent,
   },
 });
