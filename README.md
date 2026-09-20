@@ -124,4 +124,4 @@ it wrote the implementation code that is in this repository.
 ## 9. Deliverables
 
 - GitHub repository: https://github.com/tamannayousuf26/demo_expo
-- Drive folder (APK, screenshots, demo video): `<add Drive folder link here>`
+- Drive folder (APK, screenshots, demo video): https://drive.google.com/drive/folders/1085x6n3EncT3gX_7JoPjIqnRo-Cxtcef?usp=sharing
