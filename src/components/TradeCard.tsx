@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../theme/colors";
 import type { InsiderTrade } from "../types/trade";
-import { formatCompactCurrency, formatFiledAt } from "../utils/formatters";
+import { formatCompactCurrency, formatTradeDate } from "../utils/formatters";
 import SignalBadge from "./SignalBadge";
 
 type Props = {
@@ -38,7 +38,7 @@ export default function TradeCard({ trade, onPress }: Props) {
         <Text style={[styles.meta, styles.metaInsider]} numberOfLines={1}>
           {trade.insider} · {trade.role}
         </Text>
-        <Text style={[styles.meta, styles.metaDate]}>{formatFiledAt(trade.filedAt)}</Text>
+        <Text style={[styles.meta, styles.metaDate]}>{formatTradeDate(trade.filedAt)}</Text>
       </View>
     </Pressable>
   );

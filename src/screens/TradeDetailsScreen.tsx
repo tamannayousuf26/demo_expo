@@ -5,7 +5,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { theme } from "../theme/colors";
 import { mockTrades } from "../data/mockTrades";
-import { formatCompactCurrency, formatFiledAt, formatFullCurrency, formatShares } from "../utils/formatters";
+import { formatCompactCurrency, formatFiledAt, formatFullCurrency, formatShares, formatTradeDate } from "../utils/formatters";
 import SignalBadge from "../components/SignalBadge";
 import MockActivityChart from "../components/MockActivityChart";
 
@@ -96,7 +96,7 @@ export default function TradeDetailsScreen({ route, navigation }: Props) {
             isDemoValue
           />
           <DetailRow label="Total value" value={formatFullCurrency(trade.value)} isDemoValue />
-          <DetailRow label="Transaction date" value={formatFiledAt(trade.transactionDate)} />
+          <DetailRow label="Transaction date" value={formatTradeDate(trade.transactionDate)} />
           <DetailRow label="Filed date" value={formatFiledAt(trade.filedAt)} />
           <DetailRow
             label="Signal strength"
