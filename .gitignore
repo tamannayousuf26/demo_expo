@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# local working notes, not part of the submission
+instruction.md
+plan.md
