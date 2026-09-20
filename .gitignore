@@ -43,3 +43,6 @@ yarn-error.*
 # local working notes, not part of the submission
 instruction.md
 plan.md
+
+# build output and capture assets, uploaded to Drive instead
+deliverables/
